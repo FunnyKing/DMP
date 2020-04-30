@@ -1,0 +1,5578 @@
+openapi: 3.0.2
+info:
+  title: 七河生物-研发模块 - SAAS
+  version: 1.0.50.beta 
+servers:
+  - url: "http://jiuxiniot.com/qihe-biology-e"
+tags:
+  - name: 原材料
+  - name: 堆料实验
+  - name: 取用记录
+  - name: 单核菌株
+  - name: 配方
+  - name: 库房
+  - name: 培养基
+  - name: 母种-一级母种
+  - name: 母种-二级母种
+  - name: 母种-菌种检测
+  - name: 母种-生产菌棒检测
+  - name: 种质入库
+  - name: 群体信息
+  - name: 实验
+paths:
+  /material/list:
+    get:
+      tags:
+        - 原材料
+      summary: 列表（分页）
+      security:
+        - token: []
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: 材料名称
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    name:
+                                      type: string
+                                      description: 材料名称
+                                    batchId:
+                                      type: string
+                                      description: 批次
+                                    discoverTime:
+                                      type: string
+                                      description: 检测日期，yyyy-MM-dd HH:mm:ss
+  /material/{id}:
+    get:
+      tags:
+        - 原材料
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 材料名称
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/Material"
+  /material:
+    post:
+      tags:
+        - 原材料
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 原材料的实体类，保存时不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Material"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/Material"
+    put:
+      tags:
+        - 原材料
+      summary: 修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 原材料的实体类
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Material"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/Material"
+  /material/type/count:
+    get:
+      tags:
+        - 原材料
+      summary: 种类数量
+      security:
+        - token: []
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        type: integer
+                        description: 种类数量
+  /experiment/list:
+    get:
+      tags:
+        - 堆料实验
+      summary: 列表（分页）
+      security:
+        - token: []
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: 实验名称
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    name:
+                                      type: string
+                                      description: 实验名称
+                                    createTime:
+                                      type: string
+                                      description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /experiment:
+    post:
+      tags:
+        - 堆料实验
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - createUser
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 材料名称
+                createUser:
+                  type: string
+                  description: 创建人
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        properties:
+                          id:
+                            type: string
+                            description: id
+                          name:
+                            type: string
+                            description: 实验名称
+                          createTime:
+                            type: string
+                            description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /experiment/group/list:
+    get:
+      tags:
+        - 堆料实验
+      summary: 实验组列表
+      security:
+        - token: []
+      parameters:
+        - name: expId
+          in: query
+          required: true
+          description: 实验id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/ExperimentGroup"
+  /experiment/group:
+    post:
+      tags:
+        - 堆料实验
+      summary: 保存实验组
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存实验组不需要传递id、name、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExperimentGroup"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/ExperimentGroup"
+  /experiment/times/list:
+    get:
+      tags:
+        - 堆料实验
+      summary: 实验次数列表
+      security:
+        - token: []
+      parameters:
+        - name: groupId
+          in: query
+          required: true
+          description: 实验组id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          properties:
+                            id:
+                              type: string
+                              description: id
+                            times:
+                              type: integer
+                              description: 实验次数
+                            createTime:
+                              type: string
+                              description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /experiment/times:
+    post:
+      tags:
+        - 堆料实验
+      summary: 保存实验次数
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 该body中的id、createTime不需要传递
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Experiment"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/Experiment"
+  /experiment/times/{id}:
+    get:
+      tags:
+        - 堆料实验
+      summary: 实验详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 实验次数id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/Experiment"
+  /strain/source/list:
+    get:
+      tags:
+        - 单核菌株
+      summary: 来源列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/StrainSource"
+  /strain/source:
+    post:
+      tags:
+        - 单核菌株
+      summary: 保存来源
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StrainSource"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StrainSource"
+  /strain/list:
+    get:
+      tags:
+        - 单核菌株
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - name: sourceId
+          in: query
+          required: true
+          description: 来源id
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    name:
+                                      type: string
+                                      description: 菌株名称
+                                    surplus:
+                                      type: number
+                                      description: 剩余数量
+  /strain:
+    post:
+      tags:
+        - 单核菌株
+      summary: 创建
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、usedCount、surplus
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Strain"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Strain"
+  /strain/{id}:
+    get:
+      tags:
+        - 单核菌株
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Strain"
+  /record/list:
+    get:
+      tags:
+        - 取用记录
+      summary: 列表
+      description: 列表不需要返回use
+      security:
+        - token: []
+      parameters:
+        - name: linkId
+          in: query
+          required: true
+          description: 关联模块的id
+          schema:
+            type: string
+        - name: linkType
+          in: query
+          required: true
+          description: 关联模块的类型
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Record"
+  /record/{id}:
+    get:
+      tags:
+        - 取用记录
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+        - name: linkType
+          in: query
+          required: true
+          description: 关联模块的类型
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Record"
+  /record:
+    post:
+      tags:
+        - 取用记录
+      summary: 新增
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、usedCount、surplus
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Record"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Record"
+  /formula/list:
+    get:
+      tags:
+        - 配方
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    name:
+                                      type: string
+                                      description: 配方名称
+  /formula/{id}:
+    get:
+      tags:
+        - 配方
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Formula"
+  /formula:
+    post:
+      tags:
+        - 配方
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Formula"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Formula"
+  /storeroom/list:
+    get:
+      tags:
+        - 库房
+      summary: 列表
+      description: 列表只需要返回id、name、position
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Storeroom"
+  /storeroom/{id}:
+    get:
+      tags:
+        - 库房
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Storeroom"
+  /storeroom:
+    post:
+      tags:
+        - 库房
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Storeroom"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Storeroom"
+    put:
+      tags:
+        - 库房
+      summary: 修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Storeroom"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Storeroom"
+  /storeroom/shed/list:
+    get:
+      tags:
+        - 库房
+      summary: 三层棚-列表
+      security:
+        - token: []
+      parameters:
+        - name: storeroomId
+          in: query
+          required: true
+          description: 库房id
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    createTime:
+                                      type: string
+                                      description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /storeroom/shed/{id}:
+    get:
+      tags:
+        - 库房
+      summary: 三层棚-详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomShed"
+  /storeroom/shed:
+    post:
+      tags:
+        - 库房
+      summary: 三层棚-保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreroomShed"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomShed"
+  /storeroom/sterilize/list:
+    get:
+      tags:
+        - 库房
+      summary: 灭菌参数-列表
+      security:
+        - token: []
+      parameters:
+        - name: storeroomId
+          in: query
+          required: true
+          description: 库房id
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    createTime:
+                                      type: string
+                                      description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /storeroom/sterilize/{id}:
+    get:
+      tags:
+        - 库房
+      summary: 灭菌参数-详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomSterilize"
+  /storeroom/sterilize:
+    post:
+      tags:
+        - 库房
+      summary: 灭菌参数-保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreroomSterilize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomSterilize"
+  /storeroom/environment/list:
+    get:
+      tags:
+        - 库房
+      summary: 温湿光气-列表
+      security:
+        - token: []
+      parameters:
+        - name: storeroomId
+          in: query
+          required: true
+          description: 库房id
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    createTime:
+                                      type: string
+                                      description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /storeroom/environment/{id}:
+    get:
+      tags:
+        - 库房
+      summary: 温湿光气-详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomEnvironment"
+  /storeroom/environment:
+    post:
+      tags:
+        - 库房
+      summary: 温湿光气-保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreroomEnvironment"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomEnvironment"
+  /storeroom/capacity/list:
+    get:
+      tags:
+        - 库房
+      summary: 库房总容量-列表
+      security:
+        - token: []
+      parameters:
+        - name: storeroomId
+          in: query
+          required: true
+          description: 库房id
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  properties:
+                                    id:
+                                      type: string
+                                      description: id
+                                    createTime:
+                                      type: string
+                                      description: 创建时间，yyyy-MM-dd HH:mm:ss
+  /storeroom/capacity/{id}:
+    get:
+      tags:
+        - 库房
+      summary: 库房总容量-详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomCapacity"
+  /storeroom/capacity:
+    post:
+      tags:
+        - 库房
+      summary: 库房总容量-保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id、createTime
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreroomCapacity"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/StoreroomCapacity"
+  /culture/list:
+    get:
+      tags:
+        - 培养基
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Culture"
+  /culture/{id}:
+    get:
+      tags:
+        - 培养基
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Culture"
+  /culture:
+    post:
+      tags:
+        - 培养基
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Culture"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Culture"
+  /specie/oneLevel/list:
+    get:
+      tags:
+        - 母种-一级母种
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/SpecieOne"
+  /specie/oneLevel/{id}:
+    get:
+      tags:
+        - 母种-一级母种
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieOne"
+  /specie/oneLevel:
+    post:
+      tags:
+        - 母种-一级母种
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieOne"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieOne"
+    put:
+      tags:
+        - 母种-一级母种
+      summary: 修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieOne"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieOne"
+  /specie/twoLevel/task/list:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  allOf:
+                                    - $ref: "#/components/schemas/SpecieTask"
+                                    - type: object
+                                      properties:
+                                        currentStep:
+                                          type: string
+                                          description: 当前步骤
+  /specie/twoLevel/task/steps:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 步骤列表
+      security:
+        - token: []
+      parameters:
+        - name: taskId
+          in: query
+          required: true
+          description: 任务id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieTaskStep"
+  /specie/twoLevel/task/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 分厂母种任务详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieTask"
+  /specie/twoLevel/task:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建分厂母种任务
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieTask"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieTask"
+  /specie/twoLevel/make/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 二级母种制作详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieMake"
+  /specie/twoLevel/make:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建二级母种制作
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieMake"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieMake"
+  /specie/twoLevel/inoculate/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 接种详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieInoculate"
+  /specie/twoLevel/inoculate:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建接种
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieInoculate"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieInoculate"
+  /specie/twoLevel/culture/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 培养详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieCulture"
+  /specie/twoLevel/culture:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 培养接种
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieCulture"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieCulture"
+  /specie/twoLevel/send/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 派送详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieSend"
+  /specie/twoLevel/send:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建派送
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieSend"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieSend"
+    put:
+      tags:
+        - 母种-二级母种
+      summary: 修改派送
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 修改
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieSend"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieSend"
+  /specie/twoLevel/receive/{id}:
+    get:
+      tags:
+        - 母种-二级母种
+      summary: 接收详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string 
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieReceive"
+  /specie/twoLevel/receive:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建接收
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieReceive"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieReceive"
+  /specie/twoLevel/unreceive:
+    post:
+      tags:
+        - 母种-二级母种
+      summary: 创建不接收
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieReceive"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieReceive"
+  /specie/strain/list:
+    get:
+      tags:
+        - 母种-菌种检测
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list: 
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/SpecieStrain"
+  /specie/strain/{id}:
+    get:
+      tags:
+        - 母种-菌种检测
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStrain"
+  /specie/strain:
+    post:
+      tags:
+        - 母种-菌种检测
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieStrain"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStrain"
+    put:
+      tags:
+        - 母种-菌种检测
+      summary: 修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieStrain"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStrain"
+  /specie/stick/list:
+    get:
+      tags:
+        - 母种-生产菌棒检测
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/SpecieStick"
+  /specie/stick/{id}:
+    get:
+      tags:
+        - 母种-生产菌棒检测
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStick"
+  /specie/stick:
+    post:
+      tags:
+        - 母种-生产菌棒检测
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        description: 保存时，不需要传递id
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieStick"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStick"
+    put:
+      tags:
+        - 母种-生产菌棒检测
+      summary: 修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpecieStick"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SpecieStick"
+  /germplasm/list:
+    get:
+      tags:
+        - 种质入库
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Germplasm"
+  /germplasm:
+    post:
+      tags:
+        - 种质入库
+      summary: 保存
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Germplasm"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Germplasm"
+  /germplasm/{id}:
+    get:
+      tags:
+        - 种质入库
+      summary: 种质入库详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Germplasm"
+  /germplasm/strain:
+    get:
+      tags:
+        - 种质入库
+      summary: 种质菌株保藏
+      security:
+        - token: []
+      parameters:
+        - name: germplasmId
+          description: 种质id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmStrain"
+    post:
+      tags:
+        - 种质入库
+      summary: 种质菌株保藏-保存和修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GermplasmStrain"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmStrain"
+  /germplasm/preserve:
+    get:
+      tags:
+        - 种质入库
+      summary: 保藏信息
+      security:
+        - token: []
+      parameters:
+        - name: germplasmId
+          description: 种质id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmPreserve"
+    post:
+      tags:
+        - 种质入库
+      summary: 保藏信息-保存和修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GermplasmPreserve"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmPreserve"
+  /germplasm/phenotype:
+    get:
+      tags:
+        - 种质入库
+      summary: 表型数据
+      security:
+        - token: []
+      parameters:
+        - name: germplasmId
+          description: 种质id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmPhenotype"
+    post:
+      tags:
+        - 种质入库
+      summary: 表型数据-遗传背景-保存和修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GermplasmPhenotype"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GermplasmPhenotype"
+  /groupInfo/list:
+    get:
+      tags:
+        - 群体信息
+      summary: 列表
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/GroupInfo"
+  /groupInfo:
+    post:
+      tags:
+        - 群体信息
+      summary: 保存和修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupInfo"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GroupInfo"
+  /groupInfo/{id}:
+    get:
+      tags:
+        - 群体信息
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GroupInfo"
+  /groupInfo/strain/list:
+    get:
+      tags:
+        - 群体信息
+      summary: 菌株-列表
+      security:
+        - token: []
+      parameters:
+        - name: groupInfoId
+          description: 群体信息id
+          in: query
+          required: false
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/GroupInfoStrain"
+  /groupInfo/strain:
+    post:
+      tags:
+        - 群体信息
+      summary: 菌株-保存和修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupInfoStrain"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GroupInfoStrain"
+  /groupInfo/strain/{id}:
+    get:
+      tags:
+        - 群体信息
+      summary: 菌株详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/GroupInfoStrain"
+  /test/list:
+    get:
+      tags:
+        - 实验
+      summary: 列表（分页）
+      security:
+        - token: []
+      parameters:
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Test"
+  /test/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Test"
+  /test:
+    post:
+      tags:
+        - 实验
+      summary: 保存、提交、审核
+      description: 根据id判断是新增还是修改，根据status判断是保存还是提交，审核通过还是不通过
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Test"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Test"
+  /test/module:
+    get:
+      tags:
+        - 实验
+      summary: 所有流程
+      security:
+        - token: []
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TestModule"
+  /test/process/flask/list:
+    get:
+      tags:
+        - 实验
+      summary: 摇瓶 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestFlask"
+  /test/process/flask:
+    post:
+      tags:
+        - 实验
+      summary: 摇瓶 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestFlask"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestFlask"
+  /test/process/flask/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 摇瓶 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 摇瓶id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestFlask"
+  /test/process/fermenter/list:
+    get:
+      tags:
+        - 实验
+      summary: 发酵罐 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestFermenter"
+  /test/process/fermenter:
+    post:
+      tags:
+        - 实验
+      summary: 发酵罐 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestFermenter"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestFermenter"
+  /test/process/fermenter/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 发酵罐 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 发酵罐id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestFermenter"
+  /test/process/pad/list:
+    get:
+      tags:
+        - 实验
+      summary: 平板 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestPad"
+  /test/process/pad:
+    post:
+      tags:
+        - 实验
+      summary: 平板 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestPad"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestPad"
+  /test/process/pad/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 平板 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 平板id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestPad"
+  /test/process/burette/list:
+    get:
+      tags:
+        - 实验
+      summary: 试管 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestBurette"
+  /test/process/burette:
+    post:
+      tags:
+        - 实验
+      summary: 试管 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestBurette"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestBurette"
+  /test/process/burette/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 试管 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 平板id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestBurette"
+  /test/process/sterilize/list:
+    get:
+      tags:
+        - 实验
+      summary: 生产种 - 灭菌参数 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestSterilize"
+  /test/process/sterilize:
+    post:
+      tags:
+        - 实验
+      summary: 生产种 - 灭菌参数 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestSterilize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestSterilize"
+  /test/process/sterilize/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 生产种 - 灭菌参数 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 灭菌参数id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestSterilize"
+  /test/process/production/list:
+    get:
+      tags:
+        - 实验
+      summary: 生产种 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/TestProduction"
+  /test/process/production:
+    post:
+      tags:
+        - 实验
+      summary: 生产种 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestProduction"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestProduction"
+  /test/process/production/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 生产种 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 生产种id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/TestProduction"
+                          
+  /test/process/bacterial/list:
+    get:
+      tags:
+        - 实验
+      summary: 菌棒分组 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/Bacterial"
+  
+  /test/process/bacterial/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 菌棒分组 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 生产种id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Bacterial"
+  /test/process/bacterial/make/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 菌棒分组- 制棒工艺 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 菌棒分组id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialMake"
+  /test/process/bacterial/make:
+    post:
+      tags:
+        - 实验
+      summary: 菌棒分组 - 制棒工艺 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BacterialMake"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialMake"
+  /test/process/bacterial/make/sterilize/list:
+    get:
+      tags:
+        - 实验
+      summary: 制棒工艺 - 灭菌参数 - 列表
+      security:
+        - token: []
+      parameters:
+        - name: testId
+          description: 实验id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: processId
+          description: 流程id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: groupId
+          description: 菌棒组id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PageNum"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/PageInfo"
+                          - type: object
+                            properties:
+                              list:
+                                type: array
+                                items:
+                                  $ref: "#/components/schemas/BacterialMakeSterilize"
+  /test/process/bacterial/make/sterilize:
+    post:
+      tags:
+        - 实验
+      summary: 制棒工艺 - 灭菌参数 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BacterialMakeSterilize"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialMakeSterilize"
+  /test/process/bacterial/make/sterilize/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 制棒工艺 - 灭菌参数 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 灭菌参数id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialMakeSterilize"
+  /test/process/bacterial/inoculation/{id}:
+    get:
+      tags:
+        - 实验
+      summary: 菌棒分组- 接种工艺 - 详情
+      security:
+        - token: []
+      parameters:
+        - name: id
+          description: 菌棒分组id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialInoculation"
+  /test/process/bacterial/inoculation:
+    post:
+      tags:
+        - 实验
+      summary: 菌棒分组 - 接种工艺 - 保存或修改
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BacterialInoculation"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ResponseEntity"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BacterialInoculation"
+
+components:
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PageNum:
+      name: pageNum
+      description: 分页参数，第几页
+      in: query
+      required: false
+      schema:
+        type: string
+        default: 1
+    PageSize:
+      name: pageSize
+      description: 分页参数，显示数量
+      in: query
+      required: false
+      schema:
+        type: string
+        default: 10
+  schemas:
+    ResponseEntity:
+      type: object
+      description: 返回封装对象
+      properties:
+        errCode:
+          type: integer
+          description: 状态码，0-正常，其它失败
+        msg:
+          type: string
+          description: 相应信息，如登录成功，报错信息等
+    PageInfo:
+      type: object
+      description: 分页对象
+      properties:
+        total:
+          type: integer
+          description: 数据总数
+        pageNum:
+          type: integer
+          description: 当前页
+        pageSize:
+          type: integer
+          description: 显示条数
+        size:
+          type: integer
+        startRow:
+          type: integer
+        endRow:
+          type: integer
+        pages:
+          type: integer
+          description: 总页数
+        prePage:
+          type: integer
+          description: 上一页
+        nextPage:
+          type: integer
+          description: 下一页
+        isFirstPage:
+          type: boolean
+          description: 是否是第一页
+        isLastPage:
+          type: boolean
+          description: 是否是最后一页
+        hasPreviousPage:
+          type: boolean
+          description: 是否有上一页
+        hasNextPage:
+          type: boolean
+          description: 是否有下一页
+        navigatePages:
+          type: integer
+        navigatepageNums:
+          type: array
+          items:
+            type: integer
+        navigateFirstPage:
+          type: integer
+        navigateLastPage:
+          type: integer
+    Material:
+      type: object
+      description: 原材料实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 材料名称
+        count:
+          type: integer
+          description: 数量
+        discoverTime:
+          type: string
+          description: 检测日期，yyyy-MM-dd HH:mm:ss
+        discoverUser:
+          type: string
+          description: 检测人
+        graininess:
+          type: string
+          description: 颗粒度
+        appearance:
+          type: string
+          description: 外观
+        model:
+          type: string
+          description: 型号规格
+        source:
+          type: string
+          description: 来源
+        carbonRatio:
+          type: string
+          description: 碳氮比
+        carbonSource:
+          type: string
+          description: 碳源
+        cellulose:
+          type: string
+          description: 纤维素
+        halfCellulose:
+          type: string
+          description: 半纤维素
+        ash:
+          type: string
+          description: 灰分
+        mildewDegree:
+          type: string
+          description: 霉变度
+        ph:
+          type: string
+          description: pH
+        lignin:
+          type: string
+          description: 木质素
+        waterContent:
+          type: string
+          description: 含水量
+        airPermeability:
+          type: string
+          description: 透气性
+        waterCapacity:
+          type: string
+          description: 持水力
+        batchId:
+          type: string
+          description: 批次
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Experiment:
+      type: object
+      description: 堆料实验实体类
+      properties:
+        id:
+          type: string
+          description: id
+        material:
+          type: string
+          description: 原材料名称
+        count:
+          type: integer
+          description: 数量
+        batchId:
+          type: string
+          description: 批次
+        discoverTime:
+          type: string
+          description: 检测日期，yyyy-MM-dd HH:mm:ss
+        discoverUser:
+          type: string
+          description: 检测人
+        temperature:
+          type: string
+          description: 发酵温度
+        ph:
+          type: string
+          description: pH
+        waterContent:
+          type: string
+          description: 含水量
+        colony:
+          type: string
+          description: 料内菌落种类及数量
+        ash:
+          type: string
+          description: 灰分
+        lignin:
+          type: string
+          description: 木质素
+        cellulose:
+          type: string
+          description: 纤维素
+        halfCellulose:
+          type: string
+          description: 半纤维素
+        carbonRatio:
+          type: string
+          description: 碳氮比
+        carbonSource:
+          type: string
+          description: 碳源
+        week:
+          type: integer
+          description: 第几周
+        day:
+          type: integer
+          description: 第几天
+        times:
+          type: integer
+          description: 第几次测量
+        expTimes:
+          type: integer
+          description: 实验次数
+        handleType:
+          type: string
+          description: 处理方式
+        groupId:
+          type: string
+          description: 实验组id
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    ExperimentGroup:
+      type: object
+      description: 实验组实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 组名称
+        expId:
+          type: string
+          description: 实验id
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Strain:
+      type: object
+      description: 菌株实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 菌株名称
+        source:
+          type: string
+          description: 来源
+        sourceId:
+          type: string
+          description: 来源
+        matingType:
+          type: string
+          description: 交配型
+        separateTime:
+          type: string
+          description: 单胞分离时间
+        preserveTime:
+          type: string
+          description: 保藏时间
+        batchId:
+          type: string
+          description: 批号
+        count:
+          type: integer
+          description: 保存数量
+        usedCount:
+          type: integer
+          description: 取用数量
+        surplus:
+          type: integer
+          description: 剩余数量
+        description:
+          type: string
+          description: 备注
+    StrainSource:
+      type: object
+      description: 单核菌株来源
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 名称
+        collectTime:
+          type: string
+          description: 采集时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Record:
+      type: object
+      description: 取用记录实体类
+      properties:
+        id:
+          type: string
+          description: id
+        user:
+          type: string
+          description: 取用人
+        count:
+          type: number
+          description: 取用数量
+        use:
+          type: string
+          description: 用途
+        linkId:
+          type: string
+          description: 关联模块的id
+        linkType:
+          type: string
+          description: 关联模块类型
+          enum:
+            - STRAIN
+            - GERMPLASM
+            - GROUP_INFO
+            - TEST_BURETTE
+        createTime:
+          type: string
+          description: 取用时间，yyyy-MM-dd HH:mm:ss
+    Formula:
+      type: object
+      description: 配方实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 配方名称
+        component:
+          type: array
+          description: 成分列表
+          items:
+            properties:
+              name: 
+                type: string
+                description: 成分名称
+              ratio:
+                type: number
+                description: 所占百分比，0-100，有小数点
+    Storeroom:
+      type: object
+      description: 库房实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 库房名称
+        position:
+          type: string
+          description: 位置
+        type: 
+          type: string
+          description: 类型
+        totalCapacity:
+          type: integer
+          description: 总容量
+        surplus:
+          type: integer
+          description: 剩余容量
+        temperature:
+          type: string
+          description: 温度
+        humidity:
+          type: string
+          description: 湿度
+        co2:
+          type: string
+          description: 二氧化碳
+        light:
+          type: string
+          description: 光照
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    StoreroomShed:
+      type: object
+      description: 库房-三层棚实体类
+      properties:
+        id:
+          type: string
+          description: id
+        storeroomId:
+          type: string
+          description : 库房id
+        windPower:
+          type: string
+          description: 风力大小
+        windDirection:
+          type: string
+          description: 风向
+        shedDirection: 
+          type: string
+          description: 棚向
+        bothMembrane:
+          type: string
+          description: 两侧薄膜操作
+        bothSunshade:
+          type: string
+          description: 两侧遮阳膜操作
+        topMembrane:
+          type: string
+          description: 棚顶薄膜操作
+        topSunshade:
+          type: string
+          description: 棚顶遮阳膜操作
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    StoreroomSterilize:
+      type: object
+      description: 库房-灭菌参数实体类
+      properties:
+        id:
+          type: string
+          description: id
+        storeroomId:
+          type: string
+          description: 库房id
+        pressure:
+          type: string
+          description: 压力
+        table:
+          type: array
+          description: 表格数据
+          items:
+            properties:
+              process:
+                type: string
+                description: 灭菌流程
+              humidity:
+                type: string
+                description: 湿度
+              time:
+                type: string
+                description: 时间
+              exhaust:
+                type: string
+                description: 排期
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    StoreroomEnvironment:
+      type: object
+      description: 库房-温湿光气实体类
+      properties:
+        id:
+          type: string
+          description: id
+        storeroomId:
+          type: string
+          description: 库房id
+        temperature:
+          type: string
+          description: 温度
+        humidity:
+          type: string
+          description: 湿度
+        co2:
+          type: string
+          description: 二氧化碳
+        light:
+          type: string
+          description: 光照
+        humidityMethod:
+          type: string
+          description: 加湿方式
+        humidityTime:
+          type: string
+          description: 加湿时间
+        regulationMode:
+          type: string
+          description: 调控模式
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    StoreroomCapacity:
+      type: object
+      description: 库房-总容量实体类
+      properties:
+        id:
+          type: string
+          description: id
+        storeroomId:
+          type: string
+          description: 库房id
+        totalCapacity:
+          type: integer
+          description: 总容量
+        surplus:
+          type: integer
+          description: 剩余可入库数量
+        count:
+          type: integer
+          description: 入库数量
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Culture:
+      type: object
+      description: 培养基实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 名称
+        formulaId:
+          type: string
+          description: 关联配方的id
+        formula:
+          type: string
+          description: 配方的名称
+        producer:
+          type: string
+          description: 制作人
+        count:
+          type: integer
+          description: 数量
+        condition:
+          type: string
+          description: 灭菌条件
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              ratio:
+                type: number
+                description: 成分比例
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieOne:
+      type: object
+      description: 一级母种实体类
+      properties:
+        id: 
+          type: string
+          description: id
+        formula:
+          type: string
+          description: 配方
+        batchId:
+          type: string
+          description: 批号
+        varietyCode:
+          type: string
+          description: 品种代码
+        preVarietyCode:
+          type: string
+          description: 上级木屑种批号代码
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        inoculateUser:
+          type: string
+          description: 接种人
+        inoculateCount:
+          type: integer
+          description: 接种数量
+        trainAddress:
+          type: string
+          description: 培养地点
+        productCount:
+          type: integer
+          description: 成品数量
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        picks:
+          type: array
+          description: 挑选历史
+          items:
+            properties:
+              pickDate:
+                type: string
+                description: 挑选日期，yyyy-MM-dd
+              badCount:
+                type: integer
+                description: 不合格数量
+              reason:
+                type: string
+                description: 不合格原因
+              pickUser:
+                type: string
+                description: 挑选人
+    SpecieStrain:
+      type: object
+      description: 菌种检测实体类
+      properties:
+        id: 
+          type: string
+          description: id
+        factory:
+          type: string
+          description: 分厂
+        variety:
+          type: string
+          description: 品种
+        batchId:
+          type: string
+          description: 批号
+        strainType:
+          type: string
+          description: 菌种类型
+        detectDate:
+          type: string
+          description: 检测日期，yyyy-MM-dd
+        detectUser:
+          type: string
+          description: 检测人
+        count:
+          type: integer
+          description: 数量
+        lbDetect:
+          type: string
+          description: LB检测
+        lbFileId:
+          type: string
+          description: LB照片id
+        lbFile:
+          type: string
+          description: LB照片url
+        pdaDetect:
+          type: string
+          description: PDA检测
+        pdaFileId:
+          type: string
+          description: PDA照片id
+        pdaFile:
+          type: string
+          description: PDA照片url
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieStick:
+      type: object
+      description: 生产菌棒检测实体类
+      properties:
+        id: 
+          type: string
+          description: id
+        factory:
+          type: string
+          description: 分厂
+        variety:
+          type: string
+          description: 品种
+        batchId:
+          type: string
+          description: 批号
+        source:
+          type: string
+          description: 来源
+        strainType:
+          type: string
+          description: 菌种类型
+        detectDate:
+          type: string
+          description: 检测日期，yyyy-MM-dd
+        detectUser:
+          type: string
+          description: 检测人
+        count:
+          type: integer
+          description: 数量
+        lbDetect:
+          type: string
+          description: LB检测
+        lbFileId:
+          type: string
+          description: LB照片id
+        lbFile:
+          type: string
+          description: LB照片url
+        pdaDetect:
+          type: string
+          description: PDA检测
+        pdaFileId:
+          type: string
+          description: PDA照片id
+        pdaFile:
+          type: string
+          description: PDA照片url
+        padFileId:
+          type: string
+          description: 平板照片id
+        padFile:
+          type: string
+          description: 平板照片url
+        microscopyDetect:
+          type: string
+          description: 镜检
+        microscopyFileId:
+          type: string
+          description: 镜检照片id
+        microscopyFile:
+          type: string
+          description: 镜检照片url
+        word:
+          type: string
+          description: 文字
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieTask:
+      type: object
+      description: 二级母种-分厂任务实体类
+      properties:
+        id:
+          type: string
+          description: id
+        variety:
+          type: string
+          description: 品种名称
+        planCount:
+          type: integer
+          description: 计划数量
+        useDate:
+          type: string
+          description: 取用日期，yyyy-MM-dd
+        batchId:
+          type: string
+          description: 批号
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieTaskStep:
+      type: object
+      description: 二级母种-任务步骤实体类
+      properties:
+        id:
+          type: string
+          description: id
+        variety:
+          type: string
+          description: 品种名称
+        planCount:
+          type: integer
+          description: 计划数量
+        useDate:
+          type: string
+          description: 取用日期，yyyy-MM-dd
+        batchId:
+          type: string
+          description: 批号
+        currentStep:
+          type: string
+          description: 当前步骤
+        parentBatchId:
+          type: string
+          description: 上级母种批号
+        culture:
+          type: string
+          description: 培养基名称
+        actualSendDate:
+          type: string
+          description: 实际派送日期，yyyy-MM-dd
+        recorder:
+          type: string
+          description: 记录人
+        sendCount:
+          type: integer
+          description: 派送数量
+        sendUser:
+          type: string
+          description: 派送人
+        receiveUser:
+          type: string
+          description: 接收人
+        inoculateCount:
+          type: integer
+          description: 接种数量
+        steps:
+          type: array
+          items:
+            properties:
+              id:
+                type: string
+                description: 当前步骤的id，可能是接种的id、培养的id，如果没有创建，则为null
+              type:
+                type: string
+                description: 步骤的类型
+                enum:
+                  - TASK
+                  - MAKE
+                  - INOCULATE
+                  - CULTURE
+                  - SEND
+                  - RECEIVE
+              name:
+                type: string
+                description: 步骤名称
+              status:
+                type: integer
+                description: 状态，-1-未执行，0-待执行，1-已完成
+              createTime:
+                type: string
+                description: 创建时间，yyyy-MM-dd HH:mm:ss，可能为空
+              updateTime:
+                type: string
+                description: 更新时间，yyyy-MM-dd HH:mm:ss，可能为空
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieMake:
+      type: object
+      description: 二级母种-母种制作实体类
+      properties:
+        id:
+          type: string
+          description: id
+        taskId:
+          type: string
+          description: 任务id
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        makeDate:
+          type: string
+          description: 制作日期，yyyy-MM-dd
+        cultureId:
+          type: string
+          description: 培养基id
+        culture:
+          type: string
+          description: 培养基配方名称
+        makeUser:
+          type: string
+          description: 制作人
+        planCount:
+          type: integer
+          description: 计划数量
+        condition:
+          type: string
+          description: 灭菌条件
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieInoculate:
+      type: object
+      description: 二级母种-接种实体类
+      properties:
+        id:
+          type: string
+          description: id
+        taskId:
+          type: string
+          description: 任务id
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        parentBatchId:
+          type: string
+          description: 上级母种批号
+        usedCount:
+          type: integer
+          description: 使用数量
+        inoculateCount:
+          type: integer
+          description: 接种数量
+        inoculateUser:
+          type: string
+          description: 接种人
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieCulture:
+      type: object
+      description: 二级母种-培养实体类
+      properties:
+        id:
+          type: string
+          description: id
+        taskId:
+          type: string
+          description: 任务id
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        storeroomId:
+          type: string
+          description: 库房id
+        storeroom:
+          type: string
+          description: 库房
+        picks:
+          type: array
+          description: 挑选历史
+          items:
+            properties:
+              pickDate:
+                type: string
+                description: 挑选日期，yyyy-MM-dd
+              badCount:
+                type: integer
+                description: 剔除数量
+              reason:
+                type: string
+                description: 不合格原因
+        productCount:
+          type: integer
+          description: 成品数量
+        lbDetect:
+          type: string
+          description: LB检测
+        lbFileId:
+          type: string
+          description: LB照片id
+        lbFile:
+          type: string
+          description: LB照片url
+        pdaDetect:
+          type: string
+          description: PDA检测
+        pdaFileId:
+          type: string
+          description: PDA照片id
+        pdaFile:
+          type: string
+          description: PDA照片url
+        padFileId:
+          type: string
+          description: 平板照片id
+        padFile:
+          type: string
+          description: 平板照片url
+        microscopyDetect:
+          type: string
+          description: 镜检
+        microscopyFileId:
+          type: string
+          description: 镜检照片id
+        microscopyFile:
+          type: string
+          description: 镜检照片url
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieSend:
+      type: object
+      description: 二级母种-派送实体类
+      properties:
+        id:
+          type: string
+          description: id
+        taskId:
+          type: string
+          description: 任务id
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        planSendDate:
+          type: string
+          description: 理论派送日期
+        actualSendDate:
+          type: string
+          description: 实际派送日期
+        recorder:
+          type: string
+          description: 记录人
+        sendCount:
+          type: integer
+          description: 派送数量
+        sendUser:
+          type: string
+          description: 派送人
+        receiveUser:
+          type: string
+          description: 接收人
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    SpecieReceive:
+      type: object
+      description: 二级母种-接收实体类
+      properties:
+        id:
+          type: string
+          description: id
+        taskId:
+          type: string
+          description: 任务id
+        receiveUser:
+          type: string
+          description: 接收人
+        receiveCount:
+          type: integer
+          description: 接收数量
+        description:
+          type: string
+          description: 备注
+    Germplasm:
+      type: object
+      description: 种质入库实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 编号
+        specie:
+          type: string
+          description: 物种
+        source:
+          type: string
+          description: 来源
+        collectType:
+          type: string
+          description: 收集方式
+        isolate:
+          type: string
+          description: 分离物
+        provider:
+          type: string
+          description: 提供者
+        mainUse:
+          type: string
+          description: 主要用途
+        sourceNumber:
+          type: string
+          description: 来源编号
+        hasStrain:
+          type: boolean
+          description: 是否已填写种质菌株保藏
+        hasPreserve:
+          type: boolean
+          description: 是否已填写保藏信息
+        hasPhenotype:
+          type: boolean
+          description: 是否已填写表型数据
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    GermplasmStrain:
+      type: object
+      description: 种质入库-种质菌株保藏实体类
+      properties:
+        germplasmId:
+          type: string
+          description: 种质入库id
+        name:
+          type: string
+          description: 名称
+        productCode:
+          type: string
+          description: 品种生产代码
+        specie:
+          type: string
+          description: 物种
+        batchId:
+          type: string
+          description: 批号
+        source:
+          type: string
+          description: 来源
+        count:
+          type: integer
+          description: 数量
+        preserveTime:
+          type: string
+          description: 保藏时间，yyyy-MM-dd HH:mm:ss
+        matingType:
+          type: string
+          description: 交配型
+        preserveCount:
+          type: integer
+          description: 保藏数量
+        useCount:
+          type: integer
+          description: 取用数量
+        surplus:
+          type: integer
+          description: 剩余数量
+        storeroomId:
+          type: string
+          description: 保存位置-库房id
+        storeroom:
+          type: string
+          description: 保存位置-库房名称
+        separateTime:
+          type: string
+          description: 单胞分离时间
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    GermplasmPreserve:
+      type: object
+      description: 种质入库-保藏信息实体类
+      properties:
+        germplasmId:
+          type: string
+          description: 种质入库id
+        pda:
+          type: object
+          description: PDA保藏
+          properties:
+            condition:
+              type: string
+              description: 灭菌条件
+            count:
+              type: integer
+              description: 数量
+            date:
+              type: string
+              description: 日期
+            list:
+              type: array
+              items:
+                properties:
+                  name:
+                    type: string
+                    description: 原料
+                  source:
+                    type: string
+                    description: 来源
+                  scale:
+                    type: string
+                    description: 比例
+        sawdust:
+          type: object
+          description: 木屑保藏
+          properties:
+            condition:
+              type: string
+              description: 灭菌条件
+            count:
+              type: integer
+              description: 数量
+            date:
+              type: string
+              description: 日期
+            waterContent:
+              type: string
+              description: 含水量
+            prefixPH:
+              type: string
+              description: 灭菌前ph
+            suffixPH:
+              type: string
+              description: 灭菌后ph
+            list:
+              type: array
+              items:
+                properties:
+                  name:
+                    type: string
+                    description: 原料
+                  source:
+                    type: string
+                    description: 来源
+                  scale:
+                    type: string
+                    description: 比例
+        nitrogen:
+          type: object
+          description: 液氮保藏
+          properties:
+            program:
+              type: string
+              description: 降温程序
+            liquidNitrogen:
+              type: string
+              description: 液氮
+            count:
+              type: integer
+              description: 数量
+            date:
+              type: string
+              description: 日期
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    GermplasmPhenotype:
+      type: object
+      description: 种质入库-表型数据-遗传背景实体类
+      properties:
+        germplasmId:
+          type: string
+          description: 种质入库id
+        relateNumber:
+          type: string
+          description: 亲本编号
+        molecule:
+          type: string
+          description: 分子标记
+        primerName:
+          type: string
+          description: 引物名称
+        primerSequence:
+          type: string
+          description: 引物序列
+        gene:
+          type: string
+          description: 基因型
+        hasSequencing:
+          type: boolean
+          description: 是否测序
+        sequencingData:
+          type: string
+          description: 测序原始数据
+    GroupInfo:
+      type: object
+      description: 群体信息实体类
+      properties:
+        id:
+          type: string
+          description: id
+        name:
+          type: string
+          description: 群体名称
+        breedingMethod:
+          type: string
+          description: 育种方法
+        hybridDate: 
+          type: string
+          description: 平板开始杂交日期
+        surplusCount:
+          type: integer
+          description: 群体剩余数量
+        unCrossCount:
+          type: integer
+          description: 未杂交数量
+        crossCullCount:
+          type: integer
+          description: 杂交剔除数量
+        padCullCount:
+          type: integer
+          description: 平板剔除数量
+        buretteCullCount:
+          type: integer
+          description: 试管剔除数量
+        produceInoculateCount:
+          type: integer
+          description: 生产种接种数量
+        produceCullCount:
+          type: integer
+          description: 生产种剔除数量
+        makingInoculateCount:
+          type: integer
+          description: 制棒接种数量
+        totalCount:
+          type: integer
+          description: 群体总数量
+          default: 0
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    GroupInfoStrain:
+      type: object
+      description: 群体信息-菌株实体类
+      properties:
+        id:
+          type: string
+          description: id
+        groupInfoId:
+          type: string
+          description: 群体信息id
+        name:
+          type: string
+          description: 菌株名称
+        source1:
+          type: string
+          description: 来源1
+        source2: 
+          type: string
+          description: 来源2
+        uncross:
+          type: string
+          description: 未杂交
+        microscopyResult:
+          type: string
+          description: 镜检结果
+        padStatus:
+          type: string
+          description: 平板状态
+        crossDate:
+          type: string
+          description: 平板开始杂交日期，yyyy-MM-dd
+        matingType:
+          type: string
+          description: 交配型
+        padFileId:
+          type: string
+          description: 平板照片id
+        padFile:
+          type: string
+          description: 平板照片url
+        padCull:
+          type: string
+          description: 平板剔除
+        laccase:
+          type: string
+          description: 漆酶活性
+        inoculateDate:
+          type: string
+          description: 保藏试管接种日期，yyyy-MM-dd 
+        fullDate:
+          type: string
+          description: 保藏试管满管日期，yyyy-MM-dd 
+        count:
+          type: integer
+          description: 保藏试管数量
+        status:
+          type: string
+          description: 状态
+        useCount:
+          type: integer
+          description: 取用数量
+        surplus:
+          type: integer
+          description: 剩余数量
+        initialScreeningTimes:
+          type: integer
+          description: 初筛次数
+        rescreeningTimes1:
+          type: integer
+          description: 复筛次数1
+        rescreeningTimes2:
+          type: integer
+          description: 复筛次数2
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Test:
+      description: 实验实体类
+      properties:
+        id:
+          type: string
+          description: id
+        serialNumber:
+          type: string
+          description: 编号
+        name:
+          type: string
+          description: 实验名称
+        group:
+          type: string
+          description: 所属小组
+        type:
+          type: string
+          description: 实验类型
+        times:
+          type: integer
+          description: 实验次数
+        status:
+          type: string
+          description: 状态
+          enum:
+            - CREATED
+            - REVIEWING
+            - REVIEW_FAILED
+            - PROCESSING
+            - OK
+        description:
+          type: string
+          description: 实验描述
+        modules:
+          type: array
+          description: 选中的模块列表
+          items:
+            $ref: "#/components/schemas/TestModule"
+        processes:
+          type: array
+          description: 实验流程，返回进行中的实验合并后的流程列表
+          items:
+            $ref: "#/components/schemas/TestProcess"
+        updateTime:
+          type: string
+          description: 更新时间，yyyy-MM-dd HH:mm:ss
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    TestModule:
+      description: 实验模块实体类
+      properties:
+        id:
+          type: string
+          description: 模块id
+        code:
+          type: string
+          description: "模块编码
+            MAKE_STICK: 制棒工艺
+            INOCULATION: 接种工艺
+            TRAIN: 培养工艺
+            COLD_STORAGE: 冷库库存
+            MUSHROOMS: 出菇工艺
+            FLASK: 摇瓶
+            FERMENTER: 发酵罐
+            BURETTE: 试管保藏
+            PAD: 平板阶段
+            STRAIN: 单核菌株
+            FORMULA: 配方
+            STRAIN_SELECT: 菌株选择
+            TWO_LEVEL_SPECIE: 二级母种
+            PRODUCTION: 生产种
+            MATERIAL: 原材料
+            EXPERIMENT: 堆料参数
+          "
+        name:
+          type: string
+          description: 模块名称
+        image:
+          type: string
+          description: 模块图片url
+        tag:
+          type: string
+          description: 模块标签，菌棒流程、其它模块
+        children:
+          type: array
+          description: 子模块
+          items:
+            properties:
+              id:
+                type: string
+                description: 模块id
+              code:
+                type: string
+                description: 模块编码
+              name:
+                type: string
+                description: 模块名称
+    TestProcess:
+      description: 实验流程实体类
+      properties:
+        id:
+          type: string
+          description: 流程id
+        code:
+          type: string
+          description: 流程编码，同模块编码
+        name:
+          type: string
+          description: 流程名称
+        image:
+          type: string
+          description: 图片url
+        status:
+          type: integer
+          description: 实验的流程状态，-1-未执行，0-待执行，1-已完成
+    TestFlask:
+      description: 实验-摇瓶实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        name:
+          type: string
+          description: 名称
+        makeTime:
+          type: string
+          description: 制作时间，yyyy-MM-dd HH:mm:ss
+        makeUser:
+          type: string
+          description: 制作时间
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        waterQuality:
+          type: string
+          description: 水质
+        prefixPH:
+          type: string
+          description: 灭前后pH
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        variety:
+          type: string
+          description: 品种
+        strainBatchId:
+          type: string
+          description: 菌种批号
+        inoculateUser:
+          type: string
+          description: 接种人
+        inoculateCount:
+          type: integer
+          description: 接种量
+        trainDays:
+          type: integer
+          description: 培养天数
+        myceliumStatus:
+          type: string
+          description: 菌丝状况
+        suffixPH:
+          type: string
+          description: 成熟后ph值
+        microscopyResult:
+          type: string
+          description: 镜检结果
+        microscopyUser:
+          type: string
+          description: 镜检人
+        serialNumber:
+          type: string
+          description: 摇瓶编号
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+    TestFermenter:
+      description: 实验-发酵罐实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        name:
+          type: string
+          description: 名称
+        makeTime:
+          type: string
+          description: 制作时间，yyyy-MM-dd HH:mm:ss
+        makeUser:
+          type: string
+          description: 制作时间
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        sterilizationParam:
+          type: string
+          description: 灭菌参数
+        prefixWaterVolume:
+          type: string
+          description: 灭菌前加水体积
+        suffixCultureVolume:
+          type: string
+          description: 灭菌后培养基体积
+        prefixPH:
+          type: string
+          description: 灭菌前培养基ph
+        suffixPH:
+          type: string
+          description: 灭菌后培养基ph
+        inoculateCount:
+          type: string
+          description: 接种时间及接种数量
+        temperature:
+          type: string
+          description: 接发酵罐温度
+        tankPressure:
+          type: string
+          description: 发酵罐培养罐压
+        bestMaturityDays:
+          type: string
+          description: 最佳成熟天数
+        actualDays:
+          type: string
+          description: 实际使用天数
+        bacteriumStatus:
+          type: string
+          description: 菌球状况
+        serialNumber:
+          type: string
+          description: 发酵罐编号
+        flask:
+          type: string
+          description: 摇瓶名称
+        flaskId:
+          type: string
+          description: 摇瓶id
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+    TestPad:
+      description: 实验-平板实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        serialNumber:
+          type: string
+          description: 平板编号
+        strainName:
+          type: string
+          description: 菌株名称
+        source1:
+          type: string
+          description: 来源1
+        source2:
+          type: string
+          description: 来源2
+        unhybridized:
+          type: string
+          description: 未杂交
+        microscopyResult:
+          type: string
+          description: 镜检结果
+        padStatus:
+          type: string
+          description: 平板状态
+        crossDate:
+          type: string
+          description: 平板开始杂交日期，yyyy-MM-dd
+        matingType:
+          type: string
+          description: 交配型
+        padFileId:
+          type: string
+          description: 平板照片id
+        padFile:
+          type: string
+          description: 平板照片url
+        padCull:
+          type: string
+          description: 平板剔除
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        enzymeParam:
+          type: string
+          description: 酶活参数
+        growSpeed:
+          type: string
+          description: 生长参数
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+    TestBurette:
+      description: 实验-试管实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        serialNumber:
+          type: string
+          description: 试管编号
+        padSource1:
+          type: string
+          description: 平板来源1
+        padSource2:
+          type: string
+          description: 平板来源2
+        laccaseActivity:
+          type: string
+          description: 漆酶活性
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        fullDate:
+          type: string
+          description: 满管日期，yyyy-MM-dd
+        preserveCount:
+          type: integer
+          description: 试管保藏数量
+        preserveAddress:
+          type: string
+          description: 保藏位置
+        surplus:
+          type: number
+          description: 剩余数量
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        padId:
+          type: string
+          description: 平板id
+        pad:
+          type: string
+          description: 平板名称
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+    TestProduction:
+      description: 实验-生产种实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        inoculateCount:
+          type: integer
+          description: 接种数量
+        fullDate:
+          type: string
+          description: 满袋日期，yyyy-MM-dd
+        fileId:
+          type: string
+          description: 照片id
+        fileUrl:
+          type: string
+          description: 照片url
+        preserveCount:
+          type: integer
+          description: 保藏数量
+        preserveDate:
+          type: string
+          description: 保藏日期
+        preserveAddress:
+          type: string
+          description: 保藏位置
+        useDate:
+          type: string
+          description: 取用日期
+        useCount:
+          type: integer
+          description: 取用数量
+        productCount:
+          type: integer
+          description: 成品数量
+        badCount:
+          type: integer
+          description: 剔除数量
+        badReason:
+          type: string
+          description: 剔除原因
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+    TestSterilize:
+      description: 实验-灭菌参数实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        productionId:
+          type: string
+          description: 生产种id
+        pressure:
+          type: string
+          description: 压力
+        table:
+          type: array
+          description: 表格数据
+          items:
+            properties:
+              process:
+                type: string
+                description: 灭菌流程
+              humidity:
+                type: string
+                description: 湿度
+              time:
+                type: string
+                description: 时间
+              exhaust:
+                type: string
+                description: 排期
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    TestStick:
+      description: 实验-制棒工艺实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 实验流程id
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        makeTime:
+          type: string
+          description: 制作时间，yyyy-MM-dd HH:mm:ss
+        mixingPerson:
+          type: string
+          description: 拌料人员
+        baggingPerson:
+          type: string
+          description: 装袋人员
+        prefixWaterContent:
+          type: string
+          description: 灭前含水量
+        prefixPH:
+          type: string
+          description: 灭前ph
+        baggingWeight:
+          type: string
+          description: 装袋重量
+        baggingDensity:
+          type: string
+          description: 装袋密度
+        baggingLength:
+          type: string
+          description: 装袋长度
+        baggingTemperature:
+          type: string
+          description: 装袋温度
+        potTime:
+          type: string
+          description: 装锅时长
+        stickTemperature:
+          type: string
+          description: 棒温
+        makeCount:
+          type: string
+          description: 制作数量
+        groupNumber:
+          type: string
+          description: 分组编号，自动生成
+        batchId:
+          type: string
+          description: 批号，自动生成
+        sterilize:
+          type: object
+          description: 灭菌参数
+          properties:
+            pressure:
+              type: string
+              description: 压力
+            table:
+              type: array
+              description: 表格数据
+              items:
+                properties:
+                  process:
+                    type: string
+                    description: 灭菌流程
+                  humidity:
+                    type: string
+                    description: 湿度
+                  time:
+                    type: string
+                    description: 时间
+                  exhaust:
+                    type: string
+                    description: 排期
+        handleType:
+          type: string
+          description: 处理方式
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    Bacterial:
+      description: 实验-菌棒分组实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        batchId:
+          type: string
+          description: 批次
+        groupName:
+          type: string
+          description: 分组名称
+        groupNumber:
+          type: string
+          description: 分组编号
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        inoculateCount:
+          type: integer
+          description: 接种数量
+        storeroomId:
+          type: string
+          description: 保存位置-库房id
+        storeroom:
+          type: string
+          description: 保存位置-库房名称
+        status:
+          type: string
+          description: 菌棒组状态
+        step:
+          type: string
+          description: 菌棒组所处步骤
+        subStep:
+          type: string
+          description: 菌棒组所处子步骤
+        badReason:
+          type: string
+          description: 剔除原因
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        updateTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        littleToNext:
+          type: boolean
+          description: 是否进入下一次录入
+    BacterialMake:
+      description: 实验-菌棒分组-制棒工艺实体类
+      properties:
+        groupId:
+          type: string
+          description: 所属菌棒组id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        formulas:
+          type: array
+          description: 配方列表
+          items:
+            properties:
+              name:
+                type: string
+                description: 成分名称
+              ratio:
+                type: number
+                description: 成分比例
+              weight:
+                type: integer
+                description: 重量，单位（g）
+        makeTime:
+          type: string
+          description: 制作时间，yyyy-MM-dd HH:mm:ss
+        mixingUser:
+          type: string
+          description: 拌料人员
+        bagUser:
+          type: string
+          description: 装袋人员
+        prefixWaterContent:
+          type: string
+          description: 含水量
+        prefixPH:
+          type: string
+          description: 灭菌前ph
+        bagWeight:
+          type: string
+          description: 装袋重量
+        bagDensity:
+          type: string
+          description: 装袋密度
+        bagLength:
+          type: string
+          description: 装袋长度
+        stackingTemperature:
+          type: string
+          description: 堆料温度
+        fillingTime:
+          type: string
+          description: 装锅时长
+        barTemperature:
+          type: string
+          description: 棒温
+        handleType:
+          type: string
+          description: 处理方式
+        storeroomId:
+          type: string
+          description: 保存位置-库房id
+        storeroom:
+          type: string
+          description: 保存位置-库房名称
+        groupCount:
+          type: string
+          description: 分组数量
+        makeNumber:
+          type: string
+          description: 每组菌棒数量
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        updateTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        subToNext:
+          type: boolean
+          description: 是否进入下一次录入
+          
+    BacterialInoculation:
+      description: 实验-菌棒分组-接种工艺实体类
+      properties:
+        groupId:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        suffixWaterContent:
+          type: string
+          description: 灭菌后含水量
+        suffixPH:
+          type: string
+          description: 灭菌后ph
+        inoculateDate:
+          type: string
+          description: 接种日期，yyyy-MM-dd
+        holesUser:
+          type: string
+          description: 打孔人员
+        stopperUser:
+          type: string
+          description: 塞菌种人员
+        inoculateUser:
+          type: string
+          description: 接种人
+        inoculateCount:
+          type: integer
+          description: 接种量
+        variety:
+          type: string
+          description: 所接品种
+        strainBatchId:
+          type: string
+          description: 菌种批次
+        strain:
+          type: string
+          description: 菌种名称
+        weather:
+          type: string
+          description: 天气
+        disinfect:
+          type: string
+          description: 消毒
+        barTemperature:
+          type: string
+          description: 棒温
+        badCount:
+          type: string
+          description: 废棒数量
+        badProduction:
+          type: string
+          description: 生产种剔除
+        badReason:
+          type: string
+          description: 剔除原因
+        mycelialDensity:
+          type: string
+          description: 菌丝密度
+        mycelialGrowth:
+          type: string
+          description: 菌丝长势
+        mycelialOdor:
+          type: string
+          description: 菌丝气味
+        groupCount:
+          type: string
+          description: 分组数量
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        updateTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+        toNext:
+          type: boolean
+          description: 是否进入下一步
+        subToNext:
+          type: boolean
+          description: 是否进入下一次录入
+    BacterialMakeSterilize:
+      description: 实验-菌棒分组-灭菌参数实体类
+      properties:
+        id:
+          type: string
+          description: id
+        testId:
+          type: string
+          description: 实验id
+        processId:
+          type: string
+          description: 流程id
+        groupId:
+          type: string
+          description: 菌棒组id
+        pressure:
+          type: string
+          description: 压力
+        table:
+          type: array
+          description: 表格数据
+          items:
+            properties:
+              process:
+                type: string
+                description: 灭菌流程
+              humidity:
+                type: string
+                description: 湿度
+              time:
+                type: string
+                description: 时间
+              exhaust:
+                type: string
+                description: 排期
+        createTime:
+          type: string
+          description: 创建时间，yyyy-MM-dd HH:mm:ss
+    
